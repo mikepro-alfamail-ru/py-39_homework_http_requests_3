@@ -10,17 +10,20 @@ def main():
     fromdate_unixtime = round(time.mktime(fromdate.timetuple()))
     page = 1
     has_more = True
-    questions_db = {}
+    questions_list = []
     while has_more:
         api_url = f'https://api.stackexchange.com/2.2/search/advanced?page={page}&pagesize=100&fromdate={fromdate_unixtime}' \
                   '&order=desc&sort=activity&tagged=Python&site=stackoverflow'
         response = requests.get(api_url).text
-        questions_db.update(json.loads(response))
+        # print(response)
+        questions_db = json.loads(response)
+        for question in questions_db['items']:
+            questions_list.append(question['title'])
         has_more = questions_db['has_more']
         page += 1
 
-    for question in questions_db['items']:
-        print(question['title'])
+    for question in questions_list:
+        print(question)
 
 if __name__ == '__main__':
     main()
